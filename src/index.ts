@@ -1,121 +1,154 @@
-// let str:string;
-// str = "10";
-// function fun(op1: number, op2: number): number {
-//     return op1 * op2;
-// }
-// let a = fun(2, 2);
-// a = 10;
-// let b = 10;
-// let d = b - +"10";
-// if (str) {
-//     console.log(str);
-// }
-// function fun1(s:string): boolean {
-//     return !!s;
-// }
-// let vf: (n1:number, n2:number) => string;
-// function fun4(op1:number, op2:number):string {
-//     return op1 + op2 + "";
-// }
-// vf = fun4;
-// console.log(vf(2, 2));
-// function sum(ar: number[]): number {
-//     return ar.reduce((res, cur) => res + cur);
-// }
-// let ar: Array<number> = [1, 2, 3];
-// ar.push(12);
-// console.log(sum(ar))
-// let set = new Set<number>([1,1,1,2,2,2,3,3]);
-// console.log(set);
-// set.forEach(e => console.log(e));
-// set.add(10);
-// const ar1 = Array.from(set);
-// console.log(ar1)
-// console.log(set.has(10));
-// console.log(sum(ar1));
-
-// const mapMonths = new Map<number, string>([
-//     [1, "Januar"], [2, "Februar"], [3, "March"]
-// ])
-// mapMonths.set(4, 'April');
-// mapMonths.set(1, 'Jan');
-// console.log(mapMonths);
-// // console.log(mapMonths.get(5));
-// // console.log(mapMonths.has(5));
-// const arEntries = Array.from(mapMonths); //array of entries
-// console.log(arEntries); 
-// const arKeys = Array.from(mapMonths.keys());
-// console.log(arKeys);
-// arEntries.push([6, 'hhhh']);
-// arKeys.push(10);
-// console.log(arKeys);
-// const arValues = Array.from(mapMonths.values());
-// arValues.push("10");
-// console.log(arValues);
-
 // type Person = {
 //     id: number;
 //     name: string;
-//     age?: number;
-//     city?: string;
+//     address: string;
 // }
-// function createPerson(id: number, name: string): Person {
-//     return {id, name};
+// const person1: Person = {id: 123, name: 'Moshe', address: 'Lod'};
+// interface IPerson {
+//     id: number,
+//     name: string
 // }
-// console.log(createPerson(123, 'Vasya'));
-// let person: Person = {id: 100, name: 'Moshe', age: 20, city: 'Lod'};
-// let persons: Person[] = [];
-// persons.push(person);
+// const person2: IPerson = {id: 124, name: 'Sara', address: 'Lod'};
 
-// function strLength(str: string): number {
-//     return str.length;
+// type Employee = Person & {
+//     salary: number;
 // }
-// console.log(strLength(persons[0].city));
-
-/********************HW #32**********************/
-
-function intersection(set1: Set<number>, set2: Set<number>): number[] {
-    let set = new Set<number>([...set1].filter(e => set2.has(e)));
-    return Array.from(set);
-};
-
-function subtract(set1: Set<number>, set2: Set<number>): number[] {
-    let set = new Set<number>([...set1].filter(e => !set2.has(e)));
-    return Array.from(set);
-};
-
-let set1 = new Set<number>([1,1,1,2,2,2,3,3,3]);
-let set2 = new Set<number>([2,2,2,3,3,3,4,4,4]);
-console.log(intersection(set1, set2));
-console.log(subtract(set1, set2));
+// interface IEmployee extends IPerson {
+//     salary: number;
+// }
+// const employee1: Employee = {id: 123, name:'Moshe', salary: 10000, address: 'Lod'};
+// const employee2: IEmployee = {id: 124, name: 'Sara', salary: 10000, address: 'Lod'};
+// interface IPerson {
+//     address: string;
+// }
 
 
-type Occurrency = {
-    str: string;
-    count: number;
+
+interface Shape {
+    draw(): void;
+}
+class Point implements Shape {
+    static readonly minValue = -100;
+    static readonly maxValue = 100;
+    static checkValue(value: number) {
+        if(value < Point.minValue || value > Point.maxValue) {
+            throw `wrong value ${value}, should be in range [${Point.minValue} - ${Point.maxValue}]`
+        }
+    }
+    constructor(private _x: number, private _y: number) {
+        Point.checkValue(_x);
+        Point.checkValue(_y);
+    }
+    get x() {
+        return this._x;
+    }
+    get y() {
+        return this._y;
+    }
+    set x(value: number) {
+        Point.checkValue(value);
+        this._x = value;
+    }
+    set y(value: number) {
+        Point.checkValue(value);
+        this._y = value;
+    }
+    draw() {
+        console.log(`Point [x: ${this._x}, y: ${this._y}]`);
+    }
+}
+class Line extends Point {
+    constructor(x: number, y: number, private _point: Point) {
+        super(x, y);
+    }
+    draw() {
+        console.log('-------Line-------');
+        super.draw();
+        this._point.draw();
+        console.log('-'.repeat(20));
+    }
+    get point() {
+        return this._point;
+    }
+}
+class Square extends Point {
+    constructor(x: number, y: number, private _width: number) {
+        super(x, y);
+    }
+    get width() {
+        return this._width;
+    }
+    draw() {
+        console.log('-------Square-------');
+        super.draw();
+        console.log(`width: ${this._width}`);
+        console.log('-'.repeat(20));
+    }
+}
+class Rectangle extends Square {
+    constructor(x: number, y: number, width: number, private _height: number) {
+        super(x, y, width);
+    }
+    draw() {
+        console.log('========Rectangle=======');
+        super.draw();
+        console.log(`height: ${this._height}`);
+        console.log('='.repeat(20))     
+    }
+}
+const shape: Shape = new Square(3, 4, 10); //Upper casting
+// ------- way of specific methods call -------
+// if (shape instanceof Square) {
+//     console.log(shape.width);
+// }
+
+// ------- demo of setter usage with checking and following exception -------
+// const point: Point = new Point(10, 10);
+// point.draw();
+// point.x = 200;
+// point.draw();
+
+const shapes: Shape[] = [
+    new Line(3, 4, new Point(10, 10)),
+    new Square(2, 5, 10),
+    new Line(20, 30, new Point(3,4)),
+    new Rectangle(10, 15, 20, 5)
+]
+shapes.forEach(shape => shape.draw());
+
+//******************HW#33 ********************/
+
+class Canvas implements Shape {
+    constructor(private _shapes: Shape[] = []) {
+
+    }
+    draw(): void{
+        this._shapes.forEach(shape => console.log(shape));
+    }
+    addShape(shape: Shape): number {
+        this._shapes.push(shape);
+        return this._shapes.indexOf(shape);
+    }
+    removeShape(index: number): Shape {
+        this._shapes.splice(index, 1);
+        return this._shapes[index];
+    }
+    sort(): void {
+        this._shapes.sort((s1, s2) => {
+            const res = s2[0] - s1[0];
+            return res == 0 ? s1[1] - s2[1] : res;
+        })
+    }
+    removeIf(predicate: (shape: Shape) => boolean) {
+        this._shapes.filter(shape => predicate(shape) == false);
+    }
 }
 
-function getSortedOccurrences (array: string[]): Occurrency[] {
-    const map = new Map<string, number>()
-    let count = array.reduce((acc, current) => {acc[current] == undefined ? acc[current] = 1 : acc[current]++; return acc}, {});
-    let keys = Object.keys(count);
-    let values = Object.keys(count).map(key => count[key]);
-    for(let i = 0; i < keys.length; i++) {
-        map.set(keys[i], values[i])
+
+function removeCriteria(shape: Shape): boolean {
+    let res = false;
+    if(shape instanceof Line && shape.x < shape.point.x) {
+        res = true;
     }
-    let arrMap = Array.from(map);
-    arrMap.sort((e1, e2) => {
-        const res = e2[1] - e1[1];
-        return res == 0 ? e1[0].localeCompare(e2[0]) : res;
-    })
-    let result = [];
-    for(let i = 0; i < arrMap.length; i++) {
-        result.push({str: arrMap[i][0], count: arrMap[i][1]});
-    }
-    return result;
+    return res;
 }
-
-let arr: Array<string> = ['lmn', 'ab', 'a', 'cd', 'lmn', 'cd', 'lmn'];
-console.log(getSortedOccurrences(arr));
-
-/************************************************/
